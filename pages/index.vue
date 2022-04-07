@@ -12,6 +12,7 @@
 </template>
 
 <script>
+console.log('index.vue')
 export default {
   name: 'IndexPage'
 }
