@@ -5,16 +5,5 @@
       "use": "@nuxtjs/vercel-builder",
       "config": {}
     }
-  ],
-  "headers": [
-    {
-      "source": "/",
-      "headers" : [
-        {
-          "key" : "Cache-Control",
-          "value" : "s-maxage=86400, stale-while-revalidate"
-        }
-      ]
-    }
   ]
 }
