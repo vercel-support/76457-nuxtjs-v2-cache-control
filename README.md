@@ -1,69 +1,42 @@
-# 76457-nuxtjs-v2
+# 76457-nuxtjs-v2-cache-control
 
-## Build Setup
+This is an example showcasing cache-control with Nuxt.js SSR using custom [servermiddleware](https://github.com/nuxt/vercel-builder#servermiddleware) + [serverfiles](https://github.com/nuxt/vercel-builder#serverfiles).
 
-```bash
-# install dependencies
-$ yarn install
+## Cache-Control Headers
 
-# serve with hot reload at localhost:3000
-$ yarn dev
+Nuxt.js' [Vercel builder](https://github.com/nuxt/vercel-builder) bundles everything route into a single serverless function and requires `cache-control` header to be set internally instead of using `vercel.json`.
 
-# build for production and launch server
-$ yarn build
-$ yarn start
+Vercel's edge will handle all the caching internally based on the `cache-header` provided by the `serverMiddleware` while always sending `public, max-age=0, must-revalidate` to frontend browsers (see https://github.com/nuxt/vercel-builder/issues/149).
 
-# generate static project
-$ yarn generate
-```
+### serverMiddlewares
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+In `server-middleware`, there are 2 middlewares.
 
-## Special Directories
+The `cache-headers.js` injects the required `cache-control` header to the Nuxt.js responses.
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+The `add-headers.js` injects a few other headers into Nuxt.js responses for demostration purposes.
 
-### `assets`
+It is possible to inspect the requested path in `cache-headers.js` middleware to serve different `cache-control` headers for different routes.
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
-
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
+`serverFiles` is used in `vercel.json` to bundle files inside `/server-middleware` into the final serverless function (https://github.com/vercel-support/76457-nuxtjs-v2-cache-control/blob/master/vercel.json#L6-L8).
 
 
-### `pages`
+## Outcomes
 
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+### Initial Request
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+![CleanShot 2022-04-07 at 17 37 05@2x](https://user-images.githubusercontent.com/179761/162190866-72859f4d-4971-4938-afe2-f39d6079c839.png)
 
-### `plugins`
+Upon first visit of https://76457-nuxtjs-v2-cache-control.vercel-support.app/about, you will notice that:
 
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+1. `x-vercel-cache` is MISS because this is an uncached SSR response
+2. `cache-control` is just `public, max-age=0, must-revalidate` (see [above](/76457-nuxtjs-v2-cache-control#Cache-Control-Headers))
+3. Random headers injected by `add-headers.js` are showing up
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
+### Subsequent Requests
 
-### `static`
+![CleanShot 2022-04-07 at 17 37 56@2x](https://user-images.githubusercontent.com/179761/162190882-b694548a-77e9-4c3d-97de-710df6cf83e2.png)
 
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+1. `x-vercel-cache` is HIT
+2. `cache-control` is still `public, max-age=0, must-revalidate` (see [above](/76457-nuxtjs-v2-cache-control#Cache-Control-Headers))
+3. Random headers injected by `add-headers.js` are missing because these headers are not cached by the static content stored in CDN
