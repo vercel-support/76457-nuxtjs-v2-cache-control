@@ -30,7 +30,7 @@ It is possible to inspect the requested path in `cache-headers.js` middleware to
 Upon first visit of https://76457-nuxtjs-v2-cache-control.vercel-support.app/about, you will notice that:
 
 1. `x-vercel-cache` is MISS because this is an uncached SSR response
-2. `cache-control` is just `public, max-age=0, must-revalidate` (see [above](/76457-nuxtjs-v2-cache-control#Cache-Control-Headers))
+2. `cache-control` is just `public, max-age=0, must-revalidate` (see [above](/vercel-support/76457-nuxtjs-v2-cache-control/blob/master/README.md#76457-nuxtjs-v2-cache-control))
 3. Random headers injected by `add-headers.js` are showing up
 
 ### Subsequent Requests
@@ -38,5 +38,5 @@ Upon first visit of https://76457-nuxtjs-v2-cache-control.vercel-support.app/abo
 ![CleanShot 2022-04-07 at 17 37 56@2x](https://user-images.githubusercontent.com/179761/162190882-b694548a-77e9-4c3d-97de-710df6cf83e2.png)
 
 1. `x-vercel-cache` is HIT
-2. `cache-control` is still `public, max-age=0, must-revalidate` (see [above](/76457-nuxtjs-v2-cache-control#Cache-Control-Headers))
+2. `cache-control` is still `public, max-age=0, must-revalidate` (see [above](/vercel-support/76457-nuxtjs-v2-cache-control/blob/master/README.md#76457-nuxtjs-v2-cache-control))
 3. Random headers injected by `add-headers.js` are missing because these headers are not cached by the static content stored in CDN
