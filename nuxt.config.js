@@ -42,5 +42,5 @@ export default {
   build: {
   },
 
-  serverMiddleware: ['~/server-middleware/cache-control']
+  serverMiddleware: ['server-middleware/cache-control']
 }
