@@ -7,5 +7,16 @@
         "serverFiles": ["server-middleware/**"]
       }
     }
+  ],
+  "headers": [
+    {
+      "source": "/about",
+      "headers" : [
+        {
+          "key" : "x-vercel-json",
+          "value" : "added in vercel.json"
+        }
+      ]
+    }
   ]
 }

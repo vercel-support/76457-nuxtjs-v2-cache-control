@@ -42,5 +42,5 @@ export default {
   build: {
   },
 
-  serverMiddleware: ['server-middleware/add-headers', 'server-middleware/cache-control']
+  serverMiddleware: ['server-middleware/cache-control', 'server-middleware/add-headers']
 }
